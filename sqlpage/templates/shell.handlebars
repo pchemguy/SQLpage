@@ -64,9 +64,8 @@
 <body class="layout-{{default layout 'boxed'}}" {{#if theme}}data-bs-theme="{{theme}}"{{/if}}>
 <div class="page">
     {{#if (or (or title (or icon image)) (gt (len (to_array menu_item)) 0))}}
-    {{#if fixed_top_menu}}<div class="sticky-top">{{/if}}
         <header id="sqlpage_header">
-        <nav class="navbar navbar-expand-md navbar-light>
+        <nav class="navbar navbar-expand-md navbar-light{{#if fixed_top_menu}} fixed-top{{/if}}">
         <div class="container-fluid">
             <a class="navbar-brand flex-grow-1 overflow-hidden" href="{{#if link}}{{link}}{{else}}/{{/if}}">
                 {{#if image}}
@@ -157,9 +156,8 @@
         </div>
         </nav>
         </header>
-    {{#if fixed_top_menu}}</div>{{/if}}
     {{/if}}
-    <main class="page-wrapper container-xl pt-3 px-md-5 px-sm-3" id="sqlpage_main_wrapper">
+    <main class="page-wrapper container-xl pt-3 px-md-5 px-sm-3 {{#if fixed_top_menu}} mt-5{{#unless (eq layout 'boxed')}} pt-5{{/unless}}{{/if}}" id="sqlpage_main_wrapper">
         {{~#each_row~}}{{~/each_row~}}
     </main>
 </div>
