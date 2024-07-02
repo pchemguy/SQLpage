@@ -1,0 +1,1 @@
+This branch focuses on the "sqlpage\templates\shell.handlebars" template, enabling buttons in the top menu.
