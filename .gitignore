@@ -7,6 +7,6 @@ examples/inrap_badass/
 sqlpage/https/*
 x.sql
 **/sqlpage.bin
-branch_dev_dir/dist
+branch_dev_dir/www/dist
 branch_dev_dir/static
 *.exe

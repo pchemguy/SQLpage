@@ -1,3 +1,36 @@
+{{! ========================= Image/Icon Partial ============================ }}
+{{!-- 
+  {{> icon_image this}}
+--}}
+
+{{#*inline "icon_image" this}}
+  <span {{~#if (and this.title (or this.icon this.image))~}}class="me-1"{{/if}}>
+    {{#if this.image}}<img width=24 height=24 src="{{this.image}}">{{/if}}
+    {{#if this.icon}}{{icon_img this.icon}}{{/if}}
+  </span>
+{{/inline}}
+
+{{! _________________________________________________________________________ }}
+
+
+{{! =========================== Submenu Partial ============================= }}
+{{!-- 
+  {{> submenu this}}
+--}}
+
+{{#*inline "submenu" submenu}}
+    {{#each submenu as |item itemId|}}
+        <br/>Title: {{item.title}} - Index: {{itemId}}
+        {{#if item.submenu}}
+            {{> submenu this}}
+        {{/if}}
+    {{/each}}
+{{/inline}}
+
+{{! _________________________________________________________________________ }}
+
+
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -743,7 +776,23 @@
                   Page-Pretitle
                 </div>
                 <h2 class="page-title">
-                  Page-Title
+
+
+                  {{> icon_image this}}
+                  {{title}}
+
+                  <br/>
+                  <br/>
+                  {{side_menu}}
+
+
+{{#*inline "myPartial" this}}
+  {{firstname}} {{lastname}}
+{{/inline}}
+
+{{#with (parse_json side_menu)}}
+  <br/>{{> submenu this}}
+{{/with}}
                 </h2>
               </div>
             </div>
@@ -762,3 +811,5 @@
     </div>
   </body>
 </html>
+
+
