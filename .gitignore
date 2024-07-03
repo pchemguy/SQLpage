@@ -10,3 +10,4 @@ x.sql
 branch_dev_dir/www/dist
 branch_dev_dir/static
 *.exe
+.obsidian
