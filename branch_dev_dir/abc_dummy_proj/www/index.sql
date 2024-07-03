@@ -14,6 +14,5 @@ SELECT
         "lastname": "Katz"
       }
     ]'            AS people,
-    sqlpage.read_file_as_text('./side_menu_dummy.json') AS side_menu,
     sqlpage.read_file_as_text('./main_menu.json') AS main_menu
     ;
