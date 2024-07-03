@@ -4,21 +4,27 @@
 --}}
 
 {{#*inline "icon_image" this}}
-  <span {{~#if (and this.title (or this.icon this.image))~}}class="me-1"{{/if}}>
-    {{#if this.image}}<img width=24 height=24 src="{{this.image}}">{{/if}}
-    {{#if this.icon}}{{icon_img this.icon}}{{/if}}
+  <span {{#if (and this.title (or this.icon this.image))}}class="me-1"{{/if}}>
+    {{#if this.image}}<img width=20 height=20 src="{{this.image}}">{{/if}}
+    {{#if this.icon}}
+      {{#unless (starts_with this.icon '<')}}
+        {{icon_img this.icon}}
+      {{else}}
+        {{{this.icon}}}
+      {{/unless}}
+    {{/if}}
   </span>
 {{/inline}}
 
 {{! _________________________________________________________________________ }}
 
 
-{{! =========================== Submenu Partial ============================= }}
+{{! ============================ Dummy Partial ============================== }}
 {{!-- 
-  {{> submenu this}}
+  {{> dummy this}}
 --}}
 
-{{#*inline "submenu" submenu}}
+{{#*inline "dummy" submenu}}
     {{#each submenu as |item itemId|}}
         <br/>Title: {{item.title}} - Index: {{itemId}}
         {{#if item.submenu}}
@@ -30,6 +36,21 @@
 {{! _________________________________________________________________________ }}
 
 
+{{! =========================== Submenu Partial ============================= }}
+{{!-- 
+  {{> submenu this}}
+--}}
+
+{{#*inline "submenu" submenu}}
+<div class="dropdown-menu">
+    {{#each submenu as |item itemId|}}
+        <a class="dropdown-item" href="{{link}}">{{title}}</a>
+    {{/each}}
+</div>
+{{/inline}}
+
+{{! _________________________________________________________________________ }}
+
 
 <!doctype html>
 <html lang="en">
@@ -37,45 +58,85 @@
     <meta charset="utf-8"/>
     <title>Tabler Combo Template</title>
     <!-- CSS files -->
-    <link href="./dist/css/tabler.min.css?1692870487" rel="stylesheet"/>
     <link href="./dist/css/tabler-flags.min.css?1692870487" rel="stylesheet"/>
     <link href="./dist/css/tabler-vendors.min.css?1692870487" rel="stylesheet"/>
-    <!-- Tabler Core -->
-    <script src="./dist/js/tabler.min.js?1692870487" defer></script>
+
+    {{#if favicon}}
+        <link rel="icon" href="{{favicon}}">
+    {{/if}}
+    {{#if manifest}}
+        <link rel="manifest" href="{{manifest}}">
+    {{/if}}
+    <link rel="stylesheet" href="{{static_path 'sqlpage.css'}}">
+    {{#each (to_array css)}}
+        {{#if this}}
+            <link rel="stylesheet" href="{{this}}">
+        {{/if}}
+    {{/each}}
+
+    {{#if font}}
+        {{#if (startsWith font "/")}}
+            <style>
+                @font-face {
+                    font-family: 'LocalFont';
+                    src: url('{{font}}') format('woff2');
+                    font-weight: normal;
+                    font-style: normal;
+                }
+                :root {
+                    --tblr-font-sans-serif: 'LocalFont', Arial, sans-serif;
+                }
+            </style>
+        {{else}}
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family={{font}}&display=fallback">
+            <style>:root { --tblr-font-sans-serif: '{{font}}', Arial, sans-serif;}</style>
+        {{/if}}
+    {{/if}}
+
+    <script src="{{static_path 'sqlpage.js'}}" defer></script>
+    {{#each (to_array javascript)}}
+        {{#if this}}
+            <script src="{{this}}" defer></script>
+        {{/if}}
+    {{/each}}
+
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="description" content="{{description}}"/>
+    {{#if norobot}}
+        <meta name="robots" content="noindex,nofollow">
+    {{/if}}
+
+    {{#if refresh}}
+        <meta http-equiv="refresh" content="{{refresh}}">
+    {{/if}}
+    {{#if rss}}
+        <link rel="alternate" type="application/rss+xml" title="{{title}}" href="{{rss}}">
+    {{/if}}
+    <meta name="generator" content="SQLPage"/>
+
+    {{#if social_image}}
+        <meta property="og:image" content="{{social_image}}"/>
+    {{/if}}
   </head>
-  <body>
+  <body class="layout-fluid">
     <div class="page">
       <!-- Sidebar -->
       <aside class="navbar navbar-vertical navbar-expand-lg" data-bs-theme="dark">
         <div class="container-fluid">
-          <h1 class="navbar-brand navbar-brand-autodark">
+          <h1 class="navbar-brand">
             <a href=".">
-              <img src="./static/logo.svg" width="110" height="32" alt="Tabler" class="navbar-brand-image">
+              {{#if logo}}<img src="{{logo}}" height="32" alt="Logo" class="navbar-brand-image">{{/if}}
             </a>
           </h1>
           <div class="navbar-nav flex-row d-lg-none">
-            <div class="nav-item d-none d-lg-flex me-3">
-              <div class="btn-list">
-                <a href="https://github.com/tabler/tabler" class="btn" target="_blank" rel="noreferrer">
-                  <!-- Download SVG icon from http://tabler-icons.io/i/brand-github -->
-                  <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" /></svg>
-                  Source code
-                </a>
-                <a href="https://github.com/sponsors/codecalm" class="btn" target="_blank" rel="noreferrer">
-                  <!-- Download SVG icon from http://tabler-icons.io/i/heart -->
-                  <svg xmlns="http://www.w3.org/2000/svg" class="icon text-pink" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" /></svg>
-                  Sponsor
-                </a>
-              </div>
-            </div>
             <div class="d-none d-lg-flex">
-              <a href="?theme=dark" class="nav-link px-0 hide-theme-dark" title="Enable dark mode" data-bs-toggle="tooltip"
-		   data-bs-placement="bottom">
+              <a href="?theme=dark" class="nav-link px-0 hide-theme-dark" title="Enable dark mode" data-bs-toggle="tooltip" data-bs-placement="bottom">
                 <!-- Download SVG icon from http://tabler-icons.io/i/moon -->
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" /></svg>
               </a>
-              <a href="?theme=light" class="nav-link px-0 hide-theme-light" title="Enable light mode" data-bs-toggle="tooltip"
-		   data-bs-placement="bottom">
+              <a href="?theme=light" class="nav-link px-0 hide-theme-light" title="Enable light mode" data-bs-toggle="tooltip" data-bs-placement="bottom">
                 <!-- Download SVG icon from http://tabler-icons.io/i/sun -->
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7" /></svg>
               </a>
@@ -182,8 +243,38 @@
               </div>
             </div>
           </div>
+
+<!-- Sidebar Menu -->
+
           <div class="collapse navbar-collapse" id="sidebar-menu">
             <ul class="navbar-nav pt-lg-3">
+
+
+            {{#each (parse_json main_menu)}}
+              <li class="nav-item">
+                {{#unless submenu}}
+                  <a class="nav-link" href="{{link}}">
+                {{else}}
+                  <a class="nav-link dropdown-toggle" href="#{{link}}" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="false" >
+                {{/unless}}
+                    <span class="nav-link-icon d-md-none d-lg-inline-block">{{> icon_image this}}</span>
+                    <span class="nav-link-title">{{title}}</span>
+                  </a>
+                {{> submenu this}}
+              </li>
+            {{/each}}
+
+
+
+
+
+
+
+
+
+
+
+
               <li class="nav-item">
                 <a class="nav-link" href="./" >
                   <span class="nav-link-icon d-md-none d-lg-inline-block">
@@ -212,42 +303,40 @@
                       <a class="dropdown-item" href="./accordion.html">
                         Accordion
                       </a>
-                      <div class="dropend">
-                        <a class="dropdown-item dropdown-toggle" href="#sidebar-authentication" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="false" >
-                          Authentication
+                      <a class="dropdown-item dropdown-toggle" href="#sidebar-authentication" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="false" >
+                        Authentication
+                      </a>
+                      <div class="dropdown-menu">
+                        <a href="./sign-in.html" class="dropdown-item">
+                          Sign in
                         </a>
-                        <div class="dropdown-menu">
-                          <a href="./sign-in.html" class="dropdown-item">
-                            Sign in
-                          </a>
-                          <a href="./sign-in-link.html" class="dropdown-item">
-                            Sign in link
-                          </a>
-                          <a href="./sign-in-illustration.html" class="dropdown-item">
-                            Sign in with illustration
-                          </a>
-                          <a href="./sign-in-cover.html" class="dropdown-item">
-                            Sign in with cover
-                          </a>
-                          <a href="./sign-up.html" class="dropdown-item">
-                            Sign up
-                          </a>
-                          <a href="./forgot-password.html" class="dropdown-item">
-                            Forgot password
-                          </a>
-                          <a href="./terms-of-service.html" class="dropdown-item">
-                            Terms of service
-                          </a>
-                          <a href="./auth-lock.html" class="dropdown-item">
-                            Lock screen
-                          </a>
-                          <a href="./2-step-verification.html" class="dropdown-item">
-                            2 step verification
-                          </a>
-                          <a href="./2-step-verification-code.html" class="dropdown-item">
-                            2 step verification code
-                          </a>
-                        </div>
+                        <a href="./sign-in-link.html" class="dropdown-item">
+                          Sign in link
+                        </a>
+                        <a href="./sign-in-illustration.html" class="dropdown-item">
+                          Sign in with illustration
+                        </a>
+                        <a href="./sign-in-cover.html" class="dropdown-item">
+                          Sign in with cover
+                        </a>
+                        <a href="./sign-up.html" class="dropdown-item">
+                          Sign up
+                        </a>
+                        <a href="./forgot-password.html" class="dropdown-item">
+                          Forgot password
+                        </a>
+                        <a href="./terms-of-service.html" class="dropdown-item">
+                          Terms of service
+                        </a>
+                        <a href="./auth-lock.html" class="dropdown-item">
+                          Lock screen
+                        </a>
+                        <a href="./2-step-verification.html" class="dropdown-item">
+                          2 step verification
+                        </a>
+                        <a href="./2-step-verification-code.html" class="dropdown-item">
+                          2 step verification code
+                        </a>
                       </div>
                       <a class="dropdown-item" href="./blank.html">
                         Blank page
@@ -791,8 +880,11 @@
 {{/inline}}
 
 {{#with (parse_json side_menu)}}
-  <br/>{{> submenu this}}
+  <br/>{{> dummy this}}
 {{/with}}
+<br/><br/>
+
+
                 </h2>
               </div>
             </div>
